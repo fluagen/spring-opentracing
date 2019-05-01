@@ -17,11 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @EnableConfigurationProperties(JaegerProperties.class)
-@PropertySource("classpath:trace-logging.yml")
 @RequiredArgsConstructor
 public class TracingAutoConfiguration {
 
@@ -36,8 +34,8 @@ public class TracingAutoConfiguration {
 
         Reporter reporter = new RemoteReporter.Builder()
             .withSender(sender)
-            .withFlushInterval(10000)
-            .withMaxQueueSize(1000)
+            .withFlushInterval(properties.getFlushInterval())
+            .withMaxQueueSize(properties.getMaxQueueSize())
             .build();
 
         Sampler sampler = new RemoteControlledSampler.Builder(properties.getServiceName())

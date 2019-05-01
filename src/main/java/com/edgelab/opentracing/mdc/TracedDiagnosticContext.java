@@ -8,7 +8,7 @@ import java.util.Map;
 
 public final class TracedDiagnosticContext {
 
-    private static final String TRACE_ID = "trace-id";
+    static final String TRACE_ID = "trace-id";
 
     Map<String, String> create(Span span) {
         SpanContext context = span.context();

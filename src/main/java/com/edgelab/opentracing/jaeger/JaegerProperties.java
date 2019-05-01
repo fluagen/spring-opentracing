@@ -13,6 +13,10 @@ class JaegerProperties {
 
     private Integer agentPort = 6831;
 
+    private Integer flushInterval = 10000;
+
+    private Integer maxQueueSize = 1000;
+
     private String samplingUrl;
 
     private String serviceName;

@@ -1,4 +1,0 @@
-# display the trace-id stored in MDC
-logging:
-  pattern:
-    level: '%5p [%X{trace-id:-}]'

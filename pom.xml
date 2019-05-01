@@ -6,8 +6,7 @@
     <artifactId>spring-opentracing</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
-
-    <description>Jaeger-based opentracing integration on top of io.opentracing.contrib.opentracing-spring-cloud-starter</description>
+    <description>Jaeger-based opentracing Spring integration</description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -17,6 +16,9 @@
         <spring-boot-dependencies.version>2.1.4.RELEASE</spring-boot-dependencies.version>
         <opentracing-spring-cloud-starter.version>0.2.5-CJI</opentracing-spring-cloud-starter.version>
         <jaeger-client.version>0.34.0</jaeger-client.version>
+
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -49,6 +51,11 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
@@ -59,7 +66,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -69,18 +76,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <compilerArgs>
-                        <!-- show java compilation warnings -->
                         <arg>-Xlint:all</arg>
-                        <!-- enable method parameter name introspection -->
-                        <arg>-parameters</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <includes>
                         <include>**/*Tests.java</include>

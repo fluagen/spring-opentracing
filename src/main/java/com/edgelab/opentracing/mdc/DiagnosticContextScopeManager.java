@@ -25,7 +25,6 @@ public class DiagnosticContextScopeManager implements ScopeManager {
         Scope scope = scopeManager.activate(span, finishSpanOnClose);
         Map<String, String> context = tracedDiagnosticContext.create(scope.span());
 
-        // Return wrapper
         return new DiagnosticContextScope(scope, context);
     }
 
