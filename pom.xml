@@ -104,4 +104,15 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>release</id>
+            <url>https://intranet.edgelab.ch/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot</id>
+            <url>https://intranet.edgelab.ch/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
