@@ -22,7 +22,7 @@ public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Map<String, Object> map = new HashMap<>();
 
         // display trace-id by default
-        map.put("logging.pattern.level", "%5p [%X{"+ TracedDiagnosticContext.TRACE_ID + ":-}]");
+        map.put("logging.pattern.level", "%5p [%X{" + TracedDiagnosticContext.TRACE_ID + ":-}]");
 
         addOrReplace(environment.getPropertySources(), map);
     }
@@ -40,9 +40,11 @@ public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
                 }
             }
         }
+
         if (target == null) {
             target = new MapPropertySource(PROPERTY_SOURCE_NAME, map);
         }
+
         if (!propertySources.contains(PROPERTY_SOURCE_NAME)) {
             propertySources.addLast(target);
         }
