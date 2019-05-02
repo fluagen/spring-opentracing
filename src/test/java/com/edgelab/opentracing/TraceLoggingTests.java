@@ -1,7 +1,6 @@
 package com.edgelab.opentracing;
 
 import com.edgelab.opentracing.TraceLoggingTests.TestController;
-import com.edgelab.opentracing.jaeger.TracingAutoConfiguration;
 import io.opentracing.Tracer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -24,14 +23,14 @@ import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(classes = {TracingAutoConfiguration.class, TestController.class}, webEnvironment = RANDOM_PORT)
-@TestPropertySource(properties = {"jaeger.service-name: toto", "logging.pattern.level: %5p [%X{trace-id:-}/%X{x-root-caller:-}]"})
+@SpringBootTest(classes = {TestController.class}, webEnvironment = RANDOM_PORT)
+@TestPropertySource(properties = {"spring.application.name: toto-api", "logging.pattern.level: %5p [%X{trace-id:-}/%X{x-root-caller:-}]"})
 @RunWith(SpringRunner.class)
 @Slf4j
 public class TraceLoggingTests {
 
     private static final String BAGGAGE_KEY = "x-root-caller";
-    private static final String BAGGAGE_VALUE = "toto";
+    private static final String BAGGAGE_VALUE = "titi";
 
     @LocalServerPort
     private int port;

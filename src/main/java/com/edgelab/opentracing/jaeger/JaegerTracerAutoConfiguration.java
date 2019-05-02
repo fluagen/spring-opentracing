@@ -12,16 +12,19 @@ import io.jaegertracing.spi.Reporter;
 import io.jaegertracing.spi.Sampler;
 import io.jaegertracing.spi.Sender;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import io.opentracing.util.ThreadLocalScopeManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@AutoConfigureBefore(TracerAutoConfiguration.class)
 @EnableConfigurationProperties(JaegerProperties.class)
 @RequiredArgsConstructor
-public class TracingAutoConfiguration {
+public class JaegerTracerAutoConfiguration {
 
     private final JaegerProperties properties;
 

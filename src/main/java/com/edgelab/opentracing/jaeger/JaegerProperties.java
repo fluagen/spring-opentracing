@@ -1,6 +1,7 @@
 package com.edgelab.opentracing.jaeger;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,6 +20,7 @@ class JaegerProperties {
 
     private String samplingUrl;
 
+    @Value("${spring.application.name}")
     private String serviceName;
 
 }
