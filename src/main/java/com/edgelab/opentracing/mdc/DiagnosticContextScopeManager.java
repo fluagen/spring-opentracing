@@ -21,7 +21,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
 
     @Override
     public Scope activate(Span span, boolean finishSpanOnClose) {
-        // Activate scope
+        // activate scope
         Scope scope = scopeManager.activate(span, finishSpanOnClose);
         Map<String, String> context = tracedDiagnosticContext.create(scope.span());
 
@@ -41,7 +41,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
         DiagnosticContextScope(Scope scope, Map<String, String> context) {
             this.scope = scope;
 
-            // Initialize MDC
+            // initialize MDC
             for (Map.Entry<String, String> entry : context.entrySet()) {
                 this.previous.put(entry.getKey(), MDC.get(entry.getKey()));
                 mdcReplace(entry.getKey(), entry.getValue());
@@ -52,7 +52,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
         public void close() {
             scope.close();
 
-            // Restore previous context
+            // restore previous context
             for (Map.Entry<String, String> entry : previous.entrySet()) {
                 mdcReplace(entry.getKey(), entry.getValue());
             }
