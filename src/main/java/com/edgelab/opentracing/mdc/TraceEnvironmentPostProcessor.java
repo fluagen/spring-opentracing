@@ -9,9 +9,11 @@ import org.springframework.core.env.PropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Copied from Spring Cloud Sleuth
+ * To be able to display default tracing info in the logs
  */
 public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
@@ -33,9 +35,10 @@ public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
             PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);
             if (source instanceof MapPropertySource) {
                 target = (MapPropertySource) source;
-                for (String key : map.keySet()) {
-                    if (!target.containsProperty(key)) {
-                        target.getSource().put(key, map.get(key));
+
+                for (Entry<String, Object> e : map.entrySet()) {
+                    if (!target.containsProperty(e.getKey())) {
+                        target.getSource().put(e.getKey(), e.getValue());
                     }
                 }
             }
