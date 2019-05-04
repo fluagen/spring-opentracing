@@ -26,7 +26,7 @@ jaeger:
   service-name: toto
 ```
 
-### In case you want to skip some custom urls:
+### In case you want to skip some custom urls
 
 ```yaml
 opentracing:
@@ -35,7 +35,7 @@ opentracing:
       skip-pattern: /manage/.*
 ```
 
-### In case you want to display your custom baggage items in the logs:
+### In case you want to display your custom baggage items in the logs
 
 You could put the following configuration in the `bootstrap.yml`,
 so that if you set a baggage item with key: `client-in-the-baggage`, it will be displayed in the logs.

@@ -39,14 +39,12 @@ public class TraceLoggingTests {
     @EnableAutoConfiguration
     public static class TestController {
 
-        static final String URI = "/traced-flux";
-
         @Autowired
         private Tracer tracer;
 
         private static final Scheduler CACHED_SCHEDULER = Schedulers.parallel();
 
-        @GetMapping(URI)
+        @GetMapping
         public Flux<Integer> tracedFlux() {
             return Flux.range(1, 10)
                 .flatMap(this::doubleMono);
@@ -66,7 +64,7 @@ public class TraceLoggingTests {
 
     @Test
     public void testControllerTracing() {
-        String url = format("http://localhost:%s%s", port, TestController.URI);
+        String url = format("http://localhost:%s", port);
 
         Long count = WebClient.create().get().uri(url)
             .header("uberctx-" + BAGGAGE_KEY, BAGGAGE_VALUE) // jaeger specific header prefix

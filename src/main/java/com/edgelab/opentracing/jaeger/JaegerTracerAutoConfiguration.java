@@ -1,7 +1,6 @@
 package com.edgelab.opentracing.jaeger;
 
 import com.edgelab.opentracing.mdc.DiagnosticContextScopeManager;
-import com.edgelab.opentracing.mdc.TracedDiagnosticContext;
 import io.jaegertracing.Configuration.SenderConfiguration;
 import io.jaegertracing.internal.JaegerTracer;
 import io.jaegertracing.internal.reporters.RemoteReporter;
@@ -29,7 +28,7 @@ public class JaegerTracerAutoConfiguration {
     private final JaegerProperties properties;
 
     @Bean
-    Tracer tracer() {
+    public Tracer tracer() {
         Sender sender = new SenderConfiguration()
             .withAgentHost(properties.getAgentHost())
             .withAgentPort(properties.getAgentPort())
@@ -47,7 +46,7 @@ public class JaegerTracerAutoConfiguration {
             .build();
 
         return new JaegerTracer.Builder(properties.getServiceName())
-            .withScopeManager(new DiagnosticContextScopeManager(new ThreadLocalScopeManager(), new TracedDiagnosticContext()))
+            .withScopeManager(new DiagnosticContextScopeManager(new ThreadLocalScopeManager()))
             .withReporter(reporter)
             .withSampler(sampler)
             .build();
