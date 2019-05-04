@@ -1,5 +1,8 @@
 # spring-opentracing
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/16c00adc8a25456598b501a8127576fa)](https://www.codacy.com/app/cji/spring-opentracing?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chengchen/spring-opentracing&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/16c00adc8a25456598b501a8127576fa)](https://www.codacy.com/app/cji/spring-opentracing?utm_source=github.com&utm_medium=referral&utm_content=chengchen/spring-opentracing&utm_campaign=Badge_Coverage)
+
 Jaeger-based opentracing integration on top of [io.opentracing.contrib.opentracing-spring-cloud-starter](https://github.com/opentracing-contrib/java-spring-cloud)
 
 Apart from what's already provided by `opentracing-spring-cloud-starter`, this library just injects the tracing information in the logs (via MDC) in the similar way as [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth) does.
