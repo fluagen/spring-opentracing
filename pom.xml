@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-boot-dependencies.version>2.1.4.RELEASE</spring-boot-dependencies.version>
-        <opentracing-spring-cloud-starter.version>0.2.5-CJI</opentracing-spring-cloud-starter.version>
+        <opentracing-spring-cloud-starter.version>0.2.6</opentracing-spring-cloud-starter.version>
         <jaeger-client.version>0.34.0</jaeger-client.version>
 
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
