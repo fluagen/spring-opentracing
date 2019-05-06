@@ -20,6 +20,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
     private final ScopeManager scopeManager;
 
     @Override
+    @Deprecated
     public Scope activate(Span span, boolean finishSpanOnClose) {
         // activate scope
         Scope scope = scopeManager.activate(span, finishSpanOnClose);
@@ -29,8 +30,23 @@ public class DiagnosticContextScopeManager implements ScopeManager {
     }
 
     @Override
+    public Scope activate(Span span) {
+        // activate scope
+        Scope scope = scopeManager.activate(span);
+        Map<String, String> context = createContext(span);
+
+        return new DiagnosticContextScope(scope, context);
+    }
+
+    @Override
+    @Deprecated
     public Scope active() {
         return scopeManager.active();
+    }
+
+    @Override
+    public Span activeSpan() {
+        return scopeManager.activeSpan();
     }
 
     private Map<String, String> createContext(Span span) {
@@ -69,6 +85,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
         }
 
         @Override
+        @Deprecated
         public Span span() {
             return scope.span();
         }
