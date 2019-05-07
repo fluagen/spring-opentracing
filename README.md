@@ -15,7 +15,7 @@ Just add the following dependency in your pom.xml:
 <dependency>
   <groupId>com.edgelab</groupId>
   <artifactId>spring-opentracing</artifactId>
-  <version>0.1.0</version>
+  <version>0.32.0</version>
 </dependency>
 ```
 
