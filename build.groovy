@@ -25,10 +25,10 @@ awsDockerNode(build, flavor, workerImage) {
         sshagent(credentials: ['jenkins-ssh-key']) {
             replacePomVersion(version())
             deploy()
-            report()
-
             sh "git push origin HEAD:master"
         }
+
+        report()
     } else {
         runTests()
     }
