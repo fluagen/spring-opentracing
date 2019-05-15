@@ -1,7 +1,7 @@
 # spring-opentracing
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/16c00adc8a25456598b501a8127576fa)](https://www.codacy.com/app/cji/spring-opentracing?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chengchen/spring-opentracing&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/16c00adc8a25456598b501a8127576fa)](https://www.codacy.com/app/cji/spring-opentracing?utm_source=github.com&utm_medium=referral&utm_content=chengchen/spring-opentracing&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/16c00adc8a25456598b501a8127576fa)](https://www.codacy.com/app/cji/spring-opentracing?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=edgelaboratories/spring-opentracing&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/16c00adc8a25456598b501a8127576fa)](https://www.codacy.com/app/cji/spring-opentracing?utm_source=github.com&utm_medium=referral&utm_content=edgelaboratories/spring-opentracing&utm_campaign=Badge_Coverage)
 
 Jaeger-based opentracing integration on top of [io.opentracing.contrib.opentracing-spring-cloud-starter](https://github.com/opentracing-contrib/java-spring-cloud)
 
@@ -46,5 +46,5 @@ so that if you set a baggage item with key: `client-in-the-baggage`, it will be 
 ```yaml
 logging:
   pattern:
-    level: '%5p [%X{trace-id:-}/%X{client-in-the-baggage:-}]'
+    level: '%5p [%X{trace-ctxt:-}/%X{client-in-the-baggage:-}]'
 ```
