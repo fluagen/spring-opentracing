@@ -9,13 +9,14 @@ Apart from what's already provided by `opentracing-spring-cloud-starter`, this l
 
 ## How to use it with minimal efforts
 
-Just add the following dependency in your pom.xml:
+Just add the following dependency in your pom.xml.
+You could find all the built versions on [Artifactory](https://intranet.edgelab.ch/artifactory/libs-release-local/com/edgelab/spring-opentracing).
 
 ```xml
 <dependency>
   <groupId>com.edgelab</groupId>
   <artifactId>spring-opentracing</artifactId>
-  <version>0.32.0</version>
+  <version>${spring-opentracing.version}</version>
 </dependency>
 ```
 

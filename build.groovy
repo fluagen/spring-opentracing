@@ -54,23 +54,23 @@ def deploy() {
 
 def report() {
     stage("Codacy report") {
-        sh "export CODACY_PROJECT_TOKEN=6a129aee1ef94db0a76d620eb7972116"
+        withEnv(["CODACY_PROJECT_TOKEN=6a129aee1ef94db0a76d620eb7972116"]) {
+            sh "curl -Ls -o codacy-coverage-reporter-assembly.jar " +
+                    "\$(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | " +
+                    "jq -r '.assets | " +
+                    "map({content_type, browser_download_url} | " +
+                    "select(.content_type | " +
+                    "contains(\"java-archive\"))) | " +
+                    ".[0].browser_download_url')"
 
-        sh "curl -Ls -o codacy-coverage-reporter-assembly.jar " +
-                "\$(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | " +
-                "jq -r '.assets | " +
-                "map({content_type, browser_download_url} | " +
-                "select(.content_type | " +
-                "contains(\"java-archive\"))) | " +
-                ".[0].browser_download_url')"
-
-        sh "java -jar codacy-coverage-reporter-assembly.jar report -l Java -r ${env.WORKSPACE}/target/site/jacoco/jacoco.xml"
+            sh "java -jar codacy-coverage-reporter-assembly.jar report -l Java -r ${env.WORKSPACE}/target/site/jacoco/jacoco.xml"
+        }
     }
 }
 
 def replacePomVersion(version) {
     sh "sed -i -e '/version/s/${getPomVersion()}/${version}/' ${env.WORKSPACE}/pom.xml"
-    sh "git commit ${env.WORKSPACE}/pom.xml -m 'update version to ${version}'"
+    sh "git commit ${env.WORKSPACE}/pom.xml -m '[ci skip] update version to ${version}'"
 }
 
 def getPomVersion() {
