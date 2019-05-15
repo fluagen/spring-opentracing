@@ -21,7 +21,7 @@ awsDockerNode(build, flavor, workerImage) {
         return
     }
 
-    if (BRANCH_NAME == 'master') {
+    if (env.BRANCH_NAME == 'master') {
         sshagent(credentials: ['jenkins-ssh-key']) {
             replacePomVersion(version())
             deploy()
@@ -39,7 +39,7 @@ awsDockerNode(build, flavor, workerImage) {
 def runTests() {
     stage("Test") {
         configFileProvider([configFile(fileId: 'marketdata-maven-settings', variable: 'MAVEN_SETTINGS')]) {
-            sh "mvn --batch-mode --settings ${MAVEN_SETTINGS} clean install -am findbugs:findbugs"
+            sh "mvn --batch-mode --settings ${env.MAVEN_SETTINGS} clean install -am findbugs:findbugs"
         }
     }
 }
@@ -47,7 +47,7 @@ def runTests() {
 def deploy() {
     stage("Deploy artifact") {
         configFileProvider([configFile(fileId: 'marketdata-maven-settings', variable: 'MAVEN_SETTINGS')]) {
-            sh "mvn --batch-mode --settings ${MAVEN_SETTINGS} clean deploy -am findbugs:findbugs"
+            sh "mvn --batch-mode --settings ${env.MAVEN_SETTINGS} clean deploy -am findbugs:findbugs"
         }
     }
 }
@@ -64,11 +64,11 @@ def report() {
                 "contains(\"java-archive\"))) | " +
                 ".[0].browser_download_url')"
 
-        sh "java -jar codacy-coverage-reporter-assembly.jar report -l Java -r ${WORKSPACE}/target/site/jacoco/jacoco.xml"
+        sh "java -jar codacy-coverage-reporter-assembly.jar report -l Java -r ${env.WORKSPACE}/target/site/jacoco/jacoco.xml"
     }
 }
 
 def replacePomVersion(version) {
-    sh "sed -i -e '/version/s/${getPomVersion()}/${version}/' ${WORKSPACE}/pom.xml"
-    sh "git commit ${WORKSPACE}/pom.xml -m 'update version to ${version}'"
+    sh "sed -i -e '/version/s/${getPomVersion()}/${version}/' ${env.WORKSPACE}/pom.xml"
+    sh "git commit ${env.WORKSPACE}/pom.xml -m 'update version to ${version}'"
 }
