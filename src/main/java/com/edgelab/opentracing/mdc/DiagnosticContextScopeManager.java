@@ -14,7 +14,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiagnosticContextScopeManager implements ScopeManager {
 
-    static final String TRACE_ID = "trace-id";
+    public static final String TRACE_CONTEXT = "trace-ctxt";
+    public static final String TRACE_ID = "trace-id";
+    public static final String SPAN_ID = "span-id";
 
     @NonNull
     private final ScopeManager scopeManager;
@@ -54,7 +56,12 @@ public class DiagnosticContextScopeManager implements ScopeManager {
 
         Map<String, String> map = new HashMap<>();
         context.baggageItems().forEach(e -> map.put(e.getKey(), e.getValue()));
-        map.put(TRACE_ID, context.toString());
+
+        // here we rely on the toString() implementation of the SpanContext
+        // which prints trace id, span id, parent span id in a single block
+        map.put(TRACE_CONTEXT, context.toString());
+        map.put(TRACE_ID, context.toTraceId());
+        map.put(SPAN_ID, context.toSpanId());
 
         return map;
     }

@@ -24,13 +24,14 @@ public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Map<String, Object> map = new HashMap<>();
 
         // display trace-id by default
-        map.put("logging.pattern.level", "%5p [%X{" + DiagnosticContextScopeManager.TRACE_ID + ":-}]");
+        map.put("logging.pattern.level", "%5p [%X{" + DiagnosticContextScopeManager.TRACE_CONTEXT + ":-}]");
 
         addOrReplace(environment.getPropertySources(), map);
     }
 
     private void addOrReplace(MutablePropertySources propertySources, Map<String, Object> map) {
         MapPropertySource target = null;
+
         if (propertySources.contains(PROPERTY_SOURCE_NAME)) {
             PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);
             if (source instanceof MapPropertySource) {

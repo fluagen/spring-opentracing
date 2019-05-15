@@ -1,10 +1,12 @@
 package com.edgelab.opentracing;
 
 import com.edgelab.opentracing.TraceLoggingTests.TestController;
+import com.edgelab.opentracing.mdc.DiagnosticContextScopeManager;
 import io.opentracing.Tracer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(classes = {TestController.class}, webEnvironment = RANDOM_PORT)
-@TestPropertySource(properties = {"spring.application.name: toto-api", "logging.pattern.level: %5p [%X{trace-id:-}/%X{x-root-caller:-}]"})
+@TestPropertySource(properties = {"spring.application.name: toto-api", "logging.pattern.level: %5p [%X{trace-ctxt:-}/%X{x-root-caller:-}]"})
 @RunWith(SpringRunner.class)
 @Slf4j
 public class TraceLoggingTests {
@@ -54,6 +56,11 @@ public class TraceLoggingTests {
             return Mono.fromSupplier(() -> {
                 assertThat(tracer.activeSpan()).isNotNull();
                 assertThat(tracer.activeSpan().getBaggageItem(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
+
+                assertThat(MDC.get(DiagnosticContextScopeManager.TRACE_CONTEXT)).isNotEmpty();
+                assertThat(MDC.get(DiagnosticContextScopeManager.TRACE_ID)).isNotEmpty();
+                assertThat(MDC.get(DiagnosticContextScopeManager.SPAN_ID)).isNotEmpty();
+                assertThat(MDC.get(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
 
                 log.info("You should see logs with tracing info for element '{}'", x);
                 return x * 2;
