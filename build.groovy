@@ -72,3 +72,8 @@ def replacePomVersion(version) {
     sh "sed -i -e '/version/s/${getPomVersion()}/${version}/' ${env.WORKSPACE}/pom.xml"
     sh "git commit ${env.WORKSPACE}/pom.xml -m 'update version to ${version}'"
 }
+
+def getPomVersion() {
+    def pom = readMavenPom file: "${env.WORKSPACE}/pom.xml"
+    pom.version
+}
