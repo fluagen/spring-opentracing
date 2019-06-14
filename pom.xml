@@ -13,9 +13,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot-dependencies.version>2.1.4.RELEASE</spring-boot-dependencies.version>
-        <opentracing-spring-cloud-starter.version>0.3.1</opentracing-spring-cloud-starter.version>
-        <jaeger-client.version>0.35.4</jaeger-client.version>
+        <spring-boot-dependencies.version>2.1.5.RELEASE</spring-boot-dependencies.version>
+        <opentracing-spring-cloud-starter.version>0.3.2</opentracing-spring-cloud-starter.version>
+        <jaeger-client.version>0.35.5</jaeger-client.version>
 
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
