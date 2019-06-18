@@ -1,6 +1,5 @@
 package com.edgelab.opentracing.mdc;
 
-import io.jaegertracing.internal.JaegerSpanContext;
 import io.opentracing.Scope;
 import io.opentracing.ScopeManager;
 import io.opentracing.Span;
@@ -17,7 +16,6 @@ public class DiagnosticContextScopeManager implements ScopeManager {
 
     public static final String TRACE_ID = "traceID";
     public static final String SPAN_ID = "spanID";
-    public static final String PARENT_SPAN_ID = "parentSpanID";
 
     @NonNull
     private final ScopeManager scopeManager;
@@ -62,11 +60,6 @@ public class DiagnosticContextScopeManager implements ScopeManager {
         // which prints trace id, span id, parent span id in a single block
         map.put(TRACE_ID, context.toTraceId());
         map.put(SPAN_ID, context.toSpanId());
-
-        if (context instanceof JaegerSpanContext) {
-            JaegerSpanContext jaegerContext = (JaegerSpanContext) context;
-            map.put(PARENT_SPAN_ID, String.valueOf(jaegerContext.getParentId()));
-        }
 
         return map;
     }
