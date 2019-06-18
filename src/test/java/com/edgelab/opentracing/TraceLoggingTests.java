@@ -57,6 +57,7 @@ public class TraceLoggingTests {
                 assertThat(tracer.activeSpan()).isNotNull();
                 assertThat(tracer.activeSpan().getBaggageItem(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
 
+                assertThat(MDC.get(DiagnosticContextScopeManager.TRACE_CONTEXT)).isNotEmpty();
                 assertThat(MDC.get(DiagnosticContextScopeManager.TRACE_ID)).isNotEmpty();
                 assertThat(MDC.get(DiagnosticContextScopeManager.SPAN_ID)).isNotEmpty();
                 assertThat(MDC.get(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);

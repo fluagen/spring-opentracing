@@ -14,6 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiagnosticContextScopeManager implements ScopeManager {
 
+    public static final String TRACE_CONTEXT = "traceCtxt";
     public static final String TRACE_ID = "traceID";
     public static final String SPAN_ID = "spanID";
 
@@ -58,6 +59,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
 
         // here we rely on the toString() implementation of the SpanContext
         // which prints trace id, span id, parent span id in a single block
+        map.put(TRACE_CONTEXT, context.toString());
         map.put(TRACE_ID, context.toTraceId());
         map.put(SPAN_ID, context.toSpanId());
 
