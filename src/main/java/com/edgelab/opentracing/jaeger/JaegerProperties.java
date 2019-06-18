@@ -23,4 +23,6 @@ class JaegerProperties {
     @Value("${spring.application.name}")
     private String serviceName;
 
+    private Boolean constSamplerDecision = true;
+
 }

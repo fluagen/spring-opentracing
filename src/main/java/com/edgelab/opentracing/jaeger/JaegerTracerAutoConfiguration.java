@@ -41,7 +41,7 @@ public class JaegerTracerAutoConfiguration {
             .build();
 
         Sampler sampler = new RemoteControlledSampler.Builder(properties.getServiceName())
-            .withInitialSampler(new ConstSampler(true))
+            .withInitialSampler(new ConstSampler(properties.getConstSamplerDecision()))
             .withSamplingManager(new HttpSamplingManager(properties.getSamplingUrl()))
             .build();
 
