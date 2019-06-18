@@ -32,18 +32,21 @@ class JaegerProperties {
     static class ConstSampler {
 
         private Boolean decision;
+
     }
 
     @Data
     static class ProbabilisticSampler {
 
         private Double samplingRate;
+
     }
 
     @Data
     static class RateLimitingSampler {
 
         private Double maxTracesPerSecond;
+
     }
 
     @Data
@@ -55,6 +58,7 @@ class JaegerProperties {
         private String url;
 
         private Double samplingRate = 1.0;
+
     }
 
 }

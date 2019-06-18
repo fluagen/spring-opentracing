@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(classes = {TestController.class}, webEnvironment = RANDOM_PORT)
-@TestPropertySource(properties = {"spring.application.name: toto-api", "logging.pattern.level: %5p [%X{trace-ctxt:-}/%X{x-root-caller:-}]"})
+@TestPropertySource(properties = {"spring.application.name: toto-api", "logging.pattern.level: %5p [%X{traceCtxt:-}/%X{x-root-caller:-}]"})
 @RunWith(SpringRunner.class)
 @Slf4j
 public class TraceLoggingTests {

@@ -47,5 +47,5 @@ so that if you set a baggage item with key: `client-in-the-baggage`, it will be 
 ```yaml
 logging:
   pattern:
-    level: '%5p [%X{trace-ctxt:-}/%X{client-in-the-baggage:-}]'
+    level: '%5p [%X{traceCtxt:-}/%X{client-in-the-baggage:-}]'
 ```
