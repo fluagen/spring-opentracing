@@ -16,6 +16,7 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import io.opentracing.util.ThreadLocalScopeManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,6 +28,7 @@ import org.springframework.util.StringUtils;
 @AutoConfigureBefore(TracerAutoConfiguration.class)
 @EnableConfigurationProperties(JaegerProperties.class)
 @RequiredArgsConstructor
+@Slf4j
 public class JaegerTracerAutoConfiguration {
 
     private final JaegerProperties properties;
@@ -54,19 +56,27 @@ public class JaegerTracerAutoConfiguration {
     @ConditionalOnMissingBean
     @Bean
     public Sampler sampler() {
-        if (properties.getConstSampler().getDecision() != null) {
-            return new ConstSampler(properties.getConstSampler().getDecision());
+        Boolean decision = properties.getConstSampler().getDecision();
+        if (decision != null) {
+            log.info("Use const sampler with '{}' decision", decision);
+            return new ConstSampler(decision);
         }
 
-        if (properties.getProbabilisticSampler().getSamplingRate() != null) {
-            return new ProbabilisticSampler(properties.getProbabilisticSampler().getSamplingRate());
+        Double samplingRate = properties.getProbabilisticSampler().getSamplingRate();
+        if (samplingRate != null) {
+            log.info("Use probabilistic sampler with {} sampling rate", samplingRate);
+            return new ProbabilisticSampler(samplingRate);
         }
 
-        if (properties.getRateLimitingSampler().getMaxTracesPerSecond() != null) {
-            return new RateLimitingSampler(properties.getRateLimitingSampler().getMaxTracesPerSecond());
+        Double maxTracesPerSecond = properties.getRateLimitingSampler().getMaxTracesPerSecond();
+        if (maxTracesPerSecond != null) {
+            log.info("Use rate limiting sampler with {} max traces per second", maxTracesPerSecond);
+            return new RateLimitingSampler(maxTracesPerSecond);
         }
 
-        if (!StringUtils.isEmpty(properties.getRemoteControlledSampler().getUrl())) {
+        String url = properties.getRemoteControlledSampler().getUrl();
+        if (!StringUtils.isEmpty(url)) {
+            log.info("Use remote controller sampler on {}", url);
             JaegerProperties.RemoteControlledSampler samplerProperties = properties.getRemoteControlledSampler();
 
             return new RemoteControlledSampler.Builder(properties.getServiceName())
@@ -76,6 +86,7 @@ public class JaegerTracerAutoConfiguration {
         }
 
         // fallback to sample every trace
+        log.info("Use fallback const sampler with 'true' decision");
         return new ConstSampler(true);
     }
 
