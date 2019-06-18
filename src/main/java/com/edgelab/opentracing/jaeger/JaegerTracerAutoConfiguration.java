@@ -6,6 +6,8 @@ import io.jaegertracing.internal.JaegerTracer;
 import io.jaegertracing.internal.reporters.RemoteReporter;
 import io.jaegertracing.internal.samplers.ConstSampler;
 import io.jaegertracing.internal.samplers.HttpSamplingManager;
+import io.jaegertracing.internal.samplers.ProbabilisticSampler;
+import io.jaegertracing.internal.samplers.RateLimitingSampler;
 import io.jaegertracing.internal.samplers.RemoteControlledSampler;
 import io.jaegertracing.spi.Reporter;
 import io.jaegertracing.spi.Sampler;
@@ -15,9 +17,11 @@ import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguratio
 import io.opentracing.util.ThreadLocalScopeManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 @Configuration
 @AutoConfigureBefore(TracerAutoConfiguration.class)
@@ -40,16 +44,39 @@ public class JaegerTracerAutoConfiguration {
             .withMaxQueueSize(properties.getMaxQueueSize())
             .build();
 
-        Sampler sampler = new RemoteControlledSampler.Builder(properties.getServiceName())
-            .withInitialSampler(new ConstSampler(true))
-            .withSamplingManager(new HttpSamplingManager(properties.getSamplingUrl()))
-            .build();
-
         return new JaegerTracer.Builder(properties.getServiceName())
             .withScopeManager(new DiagnosticContextScopeManager(new ThreadLocalScopeManager()))
             .withReporter(reporter)
-            .withSampler(sampler)
+            .withSampler(sampler())
             .build();
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public Sampler sampler() {
+        if (properties.getConstSampler().getDecision() != null) {
+            return new ConstSampler(properties.getConstSampler().getDecision());
+        }
+
+        if (properties.getProbabilisticSampler().getSamplingRate() != null) {
+            return new ProbabilisticSampler(properties.getProbabilisticSampler().getSamplingRate());
+        }
+
+        if (properties.getRateLimitingSampler().getMaxTracesPerSecond() != null) {
+            return new RateLimitingSampler(properties.getRateLimitingSampler().getMaxTracesPerSecond());
+        }
+
+        if (!StringUtils.isEmpty(properties.getRemoteControlledSampler().getUrl())) {
+            JaegerProperties.RemoteControlledSampler samplerProperties = properties.getRemoteControlledSampler();
+
+            return new RemoteControlledSampler.Builder(properties.getServiceName())
+                .withSamplingManager(new HttpSamplingManager(samplerProperties.getUrl()))
+                .withInitialSampler(new ProbabilisticSampler(samplerProperties.getSamplingRate()))
+                .build();
+        }
+
+        // fallback to sample every trace
+        return new ConstSampler(true);
     }
 
 }

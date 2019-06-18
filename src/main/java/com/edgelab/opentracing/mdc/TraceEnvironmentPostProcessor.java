@@ -23,7 +23,7 @@ public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Map<String, Object> map = new HashMap<>();
 
-        // display trace-id by default
+        // display trace context by default
         map.put("logging.pattern.level", "%5p [%X{" + DiagnosticContextScopeManager.TRACE_CONTEXT + ":-}]");
 
         addOrReplace(environment.getPropertySources(), map);
