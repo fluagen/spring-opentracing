@@ -1,5 +1,6 @@
 package com.edgelab.opentracing.mdc;
 
+import io.jaegertracing.internal.JaegerSpanContext;
 import io.opentracing.Scope;
 import io.opentracing.ScopeManager;
 import io.opentracing.Span;
@@ -14,9 +15,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiagnosticContextScopeManager implements ScopeManager {
 
-    public static final String TRACE_CONTEXT = "trace-ctxt";
-    public static final String TRACE_ID = "trace-id";
-    public static final String SPAN_ID = "span-id";
+    public static final String TRACE_ID = "traceID";
+    public static final String SPAN_ID = "spanID";
+    public static final String PARENT_SPAN_ID = "parentSpanID";
 
     @NonNull
     private final ScopeManager scopeManager;
@@ -59,9 +60,13 @@ public class DiagnosticContextScopeManager implements ScopeManager {
 
         // here we rely on the toString() implementation of the SpanContext
         // which prints trace id, span id, parent span id in a single block
-        map.put(TRACE_CONTEXT, context.toString());
         map.put(TRACE_ID, context.toTraceId());
         map.put(SPAN_ID, context.toSpanId());
+
+        if (context instanceof JaegerSpanContext) {
+            JaegerSpanContext jaegerContext = (JaegerSpanContext) context;
+            map.put(PARENT_SPAN_ID, String.valueOf(jaegerContext.getParentId()));
+        }
 
         return map;
     }
@@ -76,7 +81,7 @@ public class DiagnosticContextScopeManager implements ScopeManager {
 
             // initialize MDC
             for (Map.Entry<String, String> entry : context.entrySet()) {
-                this.previous.put(entry.getKey(), MDC.get(entry.getKey()));
+                previous.put(entry.getKey(), MDC.get(entry.getKey()));
                 mdcReplace(entry.getKey(), entry.getValue());
             }
         }

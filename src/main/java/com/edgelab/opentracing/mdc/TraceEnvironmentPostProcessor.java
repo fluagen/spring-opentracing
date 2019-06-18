@@ -24,7 +24,7 @@ public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Map<String, Object> map = new HashMap<>();
 
         // display trace-id by default
-        map.put("logging.pattern.level", "%5p [%X{" + DiagnosticContextScopeManager.TRACE_CONTEXT + ":-}]");
+        map.put("logging.pattern.level", "%5p [%X{" + DiagnosticContextScopeManager.TRACE_ID + ":-}]");
 
         addOrReplace(environment.getPropertySources(), map);
     }
