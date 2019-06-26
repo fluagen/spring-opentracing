@@ -14,7 +14,6 @@ import io.jaegertracing.spi.Sampler;
 import io.jaegertracing.spi.Sender;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
-import io.opentracing.util.ThreadLocalScopeManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -47,7 +46,7 @@ public class JaegerTracerAutoConfiguration {
             .build();
 
         return new JaegerTracer.Builder(properties.getServiceName())
-            .withScopeManager(new DiagnosticContextScopeManager(new ThreadLocalScopeManager()))
+            .withScopeManager(new DiagnosticContextScopeManager())
             .withReporter(reporter)
             .withSampler(sampler())
             .build();
