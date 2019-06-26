@@ -25,13 +25,9 @@ public class DiagnosticContextScope implements Scope {
         this.wrapped = wrapped;
         this.finishOnClose = finishOnClose;
         this.toRestore = scopeManager.tlsScope.get();
+        this.scopeManager.tlsScope.set(this);
 
-        SpanContext context = wrapped.context();
-        mdcReplace(TRACE_ID, context.toTraceId());
-        mdcReplace(SPAN_ID, context.toSpanId());
-        mdcReplace(TRACE_CONTEXT, context.toString());
-
-        scopeManager.tlsScope.set(this);
+        injectMdc(wrapped.context());
     }
 
     @Override
@@ -48,16 +44,21 @@ public class DiagnosticContextScope implements Scope {
         scopeManager.tlsScope.set(toRestore);
 
         if (toRestore != null && toRestore.wrapped != null) {
-            SpanContext context = toRestore.wrapped.context();
-            mdcReplace(TRACE_ID, context.toTraceId());
-            mdcReplace(SPAN_ID, context.toSpanId());
-            mdcReplace(TRACE_CONTEXT, context.toString());
+            injectMdc(toRestore.wrapped.context());
         }
     }
 
     @Override
     public Span span() {
         return wrapped;
+    }
+
+    private void injectMdc(SpanContext context) {
+        mdcReplace(TRACE_ID, context.toTraceId());
+        mdcReplace(SPAN_ID, context.toSpanId());
+        mdcReplace(TRACE_CONTEXT, context.toString());
+
+        context.baggageItems().forEach(e -> mdcReplace(e.getKey(), e.getValue()));
     }
 
     private void mdcReplace(String key, String value) {

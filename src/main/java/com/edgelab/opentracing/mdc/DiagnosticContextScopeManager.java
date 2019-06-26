@@ -3,6 +3,7 @@ package com.edgelab.opentracing.mdc;
 import io.opentracing.Scope;
 import io.opentracing.ScopeManager;
 import io.opentracing.Span;
+import io.opentracing.noop.NoopScopeManager.NoopScope;
 
 public class DiagnosticContextScopeManager implements ScopeManager {
 
@@ -21,8 +22,9 @@ public class DiagnosticContextScopeManager implements ScopeManager {
     @Override
     public Scope activate(Span span) {
         Scope currentScope = tlsScope.get();
+
         if (currentScope != null && currentScope.span() == span) {
-            return currentScope;
+            return NoopScope.INSTANCE;
         }
 
         return new DiagnosticContextScope(this, span);
