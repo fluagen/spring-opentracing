@@ -24,15 +24,15 @@ public class DiagnosticContextScope implements Scope {
         this.scopeManager = scopeManager;
         this.wrapped = wrapped;
         this.finishOnClose = finishOnClose;
-        this.toRestore = scopeManager.tlsScope.get();
-        this.scopeManager.tlsScope.set(this);
+        this.toRestore = scopeManager.getTlsScope().get();
+        this.scopeManager.getTlsScope().set(this);
 
         injectMdc(wrapped.context());
     }
 
     @Override
     public void close() {
-        if (scopeManager.tlsScope.get() != this) {
+        if (scopeManager.getTlsScope().get() != this) {
             // This shouldn't happen if users call methods in the expected order. Bail out.
             return;
         }
@@ -42,7 +42,7 @@ public class DiagnosticContextScope implements Scope {
         }
 
         // restore the previous scope
-        scopeManager.tlsScope.set(toRestore);
+        scopeManager.getTlsScope().set(toRestore);
 
         // and inject back the old MDC values
         if (toRestore != null && toRestore.wrapped != null) {

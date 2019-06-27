@@ -4,6 +4,9 @@ import io.opentracing.Scope;
 import io.opentracing.ScopeManager;
 import io.opentracing.Span;
 import io.opentracing.noop.NoopScopeManager.NoopScope;
+import lombok.Getter;
+
+import static lombok.AccessLevel.PACKAGE;
 
 public class DiagnosticContextScopeManager implements ScopeManager {
 
@@ -11,7 +14,8 @@ public class DiagnosticContextScopeManager implements ScopeManager {
     public static final String TRACE_ID = "traceID";
     public static final String SPAN_ID = "spanID";
 
-    final ThreadLocal<DiagnosticContextScope> tlsScope = new ThreadLocal<>();
+    @Getter(PACKAGE)
+    private final ThreadLocal<DiagnosticContextScope> tlsScope = new ThreadLocal<>();
 
     @Override
     @Deprecated
