@@ -3,108 +3,50 @@ package com.edgelab.opentracing.mdc;
 import io.opentracing.Scope;
 import io.opentracing.ScopeManager;
 import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.MDC;
+import io.opentracing.noop.NoopScopeManager.NoopScope;
+import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
+import static lombok.AccessLevel.PACKAGE;
 
-@RequiredArgsConstructor
 public class DiagnosticContextScopeManager implements ScopeManager {
 
     public static final String TRACE_CONTEXT = "traceCtxt";
     public static final String TRACE_ID = "traceID";
     public static final String SPAN_ID = "spanID";
 
-    @NonNull
-    private final ScopeManager scopeManager;
+    @Getter(PACKAGE)
+    private final ThreadLocal<DiagnosticContextScope> tlsScope = new ThreadLocal<>();
 
     @Override
     @Deprecated
     public Scope activate(Span span, boolean finishSpanOnClose) {
-        // activate scope
-        Scope scope = scopeManager.activate(span, finishSpanOnClose);
-        Map<String, String> context = createContext(scope.span());
-
-        return new DiagnosticContextScope(scope, context);
+        // skip the NoopScope optimization (deprecated method)
+        return new DiagnosticContextScope(this, span, finishSpanOnClose);
     }
 
     @Override
     public Scope activate(Span span) {
-        // activate scope
-        Scope scope = scopeManager.activate(span);
-        Map<String, String> context = createContext(span);
+        DiagnosticContextScope currentScope = tlsScope.get();
 
-        return new DiagnosticContextScope(scope, context);
+        // avoid creating more duplicated scopes in ThreadLocal if the span is already activated
+        // similar optimization like CurrentTraceContext.maybeScope(TraceContext currentSpan) in Brave
+        if (currentScope != null && currentScope.span() == span) {
+            return NoopScope.INSTANCE;
+        }
+
+        return new DiagnosticContextScope(this, span);
     }
 
     @Override
     @Deprecated
     public Scope active() {
-        return scopeManager.active();
+        return tlsScope.get();
     }
 
     @Override
     public Span activeSpan() {
-        return scopeManager.activeSpan();
-    }
-
-    private Map<String, String> createContext(Span span) {
-        SpanContext context = span.context();
-
-        Map<String, String> map = new HashMap<>();
-        context.baggageItems().forEach(e -> map.put(e.getKey(), e.getValue()));
-
-        // here we rely on the toString() implementation of the SpanContext
-        // which prints trace id, span id, parent span id in a single block
-        map.put(TRACE_CONTEXT, context.toString());
-        map.put(TRACE_ID, context.toTraceId());
-        map.put(SPAN_ID, context.toSpanId());
-
-        return map;
-    }
-
-    public static class DiagnosticContextScope implements Scope {
-
-        private final Scope scope;
-        private final Map<String, String> previous = new HashMap<>();
-
-        DiagnosticContextScope(Scope scope, Map<String, String> context) {
-            this.scope = scope;
-
-            // initialize MDC
-            for (Map.Entry<String, String> entry : context.entrySet()) {
-                previous.put(entry.getKey(), MDC.get(entry.getKey()));
-                mdcReplace(entry.getKey(), entry.getValue());
-            }
-        }
-
-        @Override
-        public void close() {
-            scope.close();
-
-            // restore previous context
-            for (Map.Entry<String, String> entry : previous.entrySet()) {
-                mdcReplace(entry.getKey(), entry.getValue());
-            }
-        }
-
-        @Override
-        @Deprecated
-        public Span span() {
-            return scope.span();
-        }
-
-        private static void mdcReplace(String key, String value) {
-            if (value != null) {
-                MDC.put(key, value);
-            } else {
-                MDC.remove(key);
-            }
-        }
-
+        DiagnosticContextScope scope = tlsScope.get();
+        return scope == null ? null : scope.span();
     }
 
 }
