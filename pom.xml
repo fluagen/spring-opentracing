@@ -4,7 +4,7 @@
 
     <groupId>com.edgelab</groupId>
     <artifactId>spring-opentracing</artifactId>
-    <version>debug</version>
+    <version>2019.06.20-b20</version>
     <packaging>jar</packaging>
     <description>Jaeger-based opentracing Spring integration</description>
 
@@ -13,13 +13,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot-dependencies.version>2.1.5.RELEASE</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.1.6.RELEASE</spring-boot-dependencies.version>
         <opentracing-spring-cloud-starter.version>0.3.2</opentracing-spring-cloud-starter.version>
         <jaeger-client.version>0.35.5</jaeger-client.version>
 
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <jacoco.version>0.8.4</jacoco.version>
     </properties>
 
