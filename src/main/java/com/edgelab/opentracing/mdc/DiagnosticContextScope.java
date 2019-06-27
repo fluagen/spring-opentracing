@@ -41,8 +41,10 @@ public class DiagnosticContextScope implements Scope {
             wrapped.finish();
         }
 
+        // restore the previous scope
         scopeManager.tlsScope.set(toRestore);
 
+        // and inject back the old MDC values
         if (toRestore != null && toRestore.wrapped != null) {
             injectMdc(toRestore.wrapped.context());
         }
