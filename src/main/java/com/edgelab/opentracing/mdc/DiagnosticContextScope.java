@@ -47,6 +47,8 @@ public class DiagnosticContextScope implements Scope {
         // and inject back the old MDC values
         if (toRestore != null && toRestore.wrapped != null) {
             injectMdc(toRestore.wrapped.context());
+        } else {
+            cleanMdc(wrapped.context());
         }
     }
 
@@ -61,6 +63,13 @@ public class DiagnosticContextScope implements Scope {
         mdcReplace(TRACE_CONTEXT, context.toString());
 
         context.baggageItems().forEach(e -> mdcReplace(e.getKey(), e.getValue()));
+    }
+
+    private void cleanMdc(SpanContext context) {
+        MDC.remove(TRACE_ID);
+        MDC.remove(SPAN_ID);
+        MDC.remove(TRACE_CONTEXT);
+        context.baggageItems().forEach(e -> MDC.remove(e.getKey()));
     }
 
     private void mdcReplace(String key, String value) {

@@ -1,8 +1,10 @@
 package com.edgelab.opentracing;
 
 import com.edgelab.opentracing.TraceLoggingTests.TestController;
-import com.edgelab.opentracing.mdc.DiagnosticContextScopeManager;
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.opentracing.util.GlobalTracer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,9 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.SPAN_ID;
+import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.TRACE_CONTEXT;
+import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.TRACE_ID;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -56,11 +61,7 @@ public class TraceLoggingTests {
             return Mono.fromSupplier(() -> {
                 assertThat(tracer.activeSpan()).isNotNull();
                 assertThat(tracer.activeSpan().getBaggageItem(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
-
-                assertThat(MDC.get(DiagnosticContextScopeManager.TRACE_CONTEXT)).isNotEmpty();
-                assertThat(MDC.get(DiagnosticContextScopeManager.TRACE_ID)).isNotEmpty();
-                assertThat(MDC.get(DiagnosticContextScopeManager.SPAN_ID)).isNotEmpty();
-                assertThat(MDC.get(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
+                assertMdc();
 
                 log.info("You should see logs with tracing info for element '{}'", x);
                 return x * 2;
@@ -81,6 +82,35 @@ public class TraceLoggingTests {
             .block();
 
         assertThat(count).isEqualTo(10);
+    }
+
+    @Test
+    public void makeSureMdcDataAreRemovedAfterClosingSpan() {
+        Span span = GlobalTracer.get().buildSpan("shortLivedSpan").start();
+        span.setBaggageItem(BAGGAGE_KEY, BAGGAGE_VALUE);
+
+        try (Scope scope = GlobalTracer.get().activateSpan(span)) {
+            assertMdc();
+
+        } finally {
+            span.finish();
+        }
+
+        refuteMdc();
+    }
+
+    private static void assertMdc() {
+        assertThat(MDC.get(TRACE_CONTEXT)).isNotEmpty();
+        assertThat(MDC.get(TRACE_ID)).isNotEmpty();
+        assertThat(MDC.get(SPAN_ID)).isNotEmpty();
+        assertThat(MDC.get(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
+    }
+
+    private static void refuteMdc() {
+        assertThat(MDC.get(TRACE_CONTEXT)).isNull();
+        assertThat(MDC.get(TRACE_ID)).isNull();
+        assertThat(MDC.get(SPAN_ID)).isNull();
+        assertThat(MDC.get(BAGGAGE_KEY)).isNull();
     }
 
 }
