@@ -86,7 +86,7 @@ public class TraceLoggingTests {
 
     @Test
     public void makeSureMdcDataAreRemovedAfterClosingSpan() {
-        Span span = GlobalTracer.get().buildSpan("shortLived").start();
+        Span span = GlobalTracer.get().buildSpan("shortLivedSpan").start();
         span.setBaggageItem(BAGGAGE_KEY, BAGGAGE_VALUE);
 
         try (Scope scope = GlobalTracer.get().activateSpan(span)) {
@@ -106,7 +106,7 @@ public class TraceLoggingTests {
         assertThat(MDC.get(BAGGAGE_KEY)).isEqualTo(BAGGAGE_VALUE);
     }
 
-    private void refuteMdc() {
+    private static void refuteMdc() {
         assertThat(MDC.get(TRACE_CONTEXT)).isNull();
         assertThat(MDC.get(TRACE_ID)).isNull();
         assertThat(MDC.get(SPAN_ID)).isNull();
