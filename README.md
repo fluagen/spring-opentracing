@@ -26,7 +26,7 @@ And configure the remote reporter:
 jaeger:
   agent-host: 169.254.1.1
   agent-port: 6831
-  sampling-url: 169.254.1.1:5778/sampling
+  remote-controlled-sampler.url: 169.254.1.1:5778/sampling
   service-name: toto
 ```
 

@@ -23,8 +23,6 @@ class JaegerProperties {
 
     private Integer maxQueueSize = 1000;
 
-    private String samplingUrl;
-
     @Value("${spring.application.name}")
     private String serviceName;
 
