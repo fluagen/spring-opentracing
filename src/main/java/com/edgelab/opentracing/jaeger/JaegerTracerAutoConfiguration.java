@@ -76,11 +76,9 @@ public class JaegerTracerAutoConfiguration {
         String url = properties.getRemoteControlledSampler().getUrl();
         if (!StringUtils.isEmpty(url)) {
             log.info("Use remote controller sampler on {}", url);
-            JaegerProperties.RemoteControlledSampler samplerProperties = properties.getRemoteControlledSampler();
 
             return new RemoteControlledSampler.Builder(properties.getServiceName())
-                .withSamplingManager(new HttpSamplingManager(samplerProperties.getUrl()))
-                .withInitialSampler(new ProbabilisticSampler(samplerProperties.getSamplingRate()))
+                .withSamplingManager(new HttpSamplingManager(url))
                 .build();
         }
 

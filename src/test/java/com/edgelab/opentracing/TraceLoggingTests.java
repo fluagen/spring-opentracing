@@ -33,7 +33,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = {TestController.class}, webEnvironment = RANDOM_PORT)
 @TestPropertySource(properties = {
     "spring.application.name: toto-api",
-    "jaeger.probabilistic-sampler.sampling-rate: 0.5",
+    "jaeger.remote-controlled-sampler.url: 169.254.1.1:5778/sampling",
     "logging.pattern.level: %5p [%X{traceCtxt:-}/%X{x-root-caller:-}]"
 })
 @RunWith(SpringRunner.class)

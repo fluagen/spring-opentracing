@@ -55,8 +55,6 @@ class JaegerProperties {
          */
         private String url;
 
-        private Double samplingRate = 1.0;
-
     }
 
 }
