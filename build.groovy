@@ -7,7 +7,7 @@ properties([
 ])
 
 def build = "spring-opentracing"
-def workerImage = "edgelab/jenkins-worker:v11.4.2"
+def workerImage = "edgelab/marketdata-ci:maven"
 def flavor = "default" // flavor of the AWS instance
 
 awsDockerNode(build, flavor, workerImage) {
