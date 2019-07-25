@@ -28,7 +28,8 @@ awsDockerNode(build, flavor, workerImage) {
             sh "git push origin HEAD:master"
         }
 
-        report()
+        // disable it for now since it requires `jq`
+        // report()
     } else {
         runTests()
     }
