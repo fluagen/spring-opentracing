@@ -28,8 +28,6 @@ awsDockerNode(build, flavor, workerImage) {
             sh "git push origin HEAD:master"
         }
 
-        // disable it for now since it requires `jq`
-        // report()
     } else {
         runTests()
     }
@@ -49,22 +47,6 @@ def deploy() {
     stage("Deploy artifact") {
         configFileProvider([configFile(fileId: 'marketdata-maven-settings', variable: 'MAVEN_SETTINGS')]) {
             sh "mvn --batch-mode --settings ${env.MAVEN_SETTINGS} clean deploy -am findbugs:findbugs"
-        }
-    }
-}
-
-def report() {
-    stage("Codacy report") {
-        withEnv(["CODACY_PROJECT_TOKEN=6a129aee1ef94db0a76d620eb7972116"]) {
-            sh "curl -Ls -o codacy-coverage-reporter-assembly.jar " +
-                    "\$(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | " +
-                    "jq -r '.assets | " +
-                    "map({content_type, browser_download_url} | " +
-                    "select(.content_type | " +
-                    "contains(\"java-archive\"))) | " +
-                    ".[0].browser_download_url')"
-
-            sh "java -jar codacy-coverage-reporter-assembly.jar report -l Java -r ${env.WORKSPACE}/target/site/jacoco/jacoco.xml"
         }
     }
 }
