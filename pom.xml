@@ -15,7 +15,7 @@
 
         <spring-boot-dependencies.version>2.2.2.RELEASE</spring-boot-dependencies.version>
         <opentracing-spring-cloud-starter.version>0.3.11</opentracing-spring-cloud-starter.version>
-        <jaeger-client.version>1.0.0</jaeger-client.version>
+        <jaeger-client.version>1.1.0</jaeger-client.version>
 
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
