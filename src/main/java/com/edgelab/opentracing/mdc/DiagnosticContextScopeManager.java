@@ -18,13 +18,6 @@ public class DiagnosticContextScopeManager implements ScopeManager {
     private final ThreadLocal<DiagnosticContextScope> tlsScope = new ThreadLocal<>();
 
     @Override
-    @Deprecated
-    public Scope activate(Span span, boolean finishSpanOnClose) {
-        // skip the NoopScope optimization (deprecated method)
-        return new DiagnosticContextScope(this, span, finishSpanOnClose);
-    }
-
-    @Override
     public Scope activate(Span span) {
         DiagnosticContextScope currentScope = tlsScope.get();
 
@@ -35,12 +28,6 @@ public class DiagnosticContextScopeManager implements ScopeManager {
         }
 
         return new DiagnosticContextScope(this, span);
-    }
-
-    @Override
-    @Deprecated
-    public Scope active() {
-        return tlsScope.get();
     }
 
     @Override
