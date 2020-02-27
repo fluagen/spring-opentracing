@@ -9,7 +9,7 @@ import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.SPAN_ID;
 import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.TRACE_CONTEXT;
 import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.TRACE_ID;
 
-public class DiagnosticContextScope implements Scope {
+class DiagnosticContextScope implements Scope {
 
     private final DiagnosticContextScopeManager scopeManager;
     private final Span wrapped;
@@ -52,8 +52,7 @@ public class DiagnosticContextScope implements Scope {
         }
     }
 
-    @Override
-    public Span span() {
+    Span span() {
         return wrapped;
     }
 
