@@ -3,7 +3,8 @@
 @Library('EdgeLabJenkins') _
 
 properties([
-        disableConcurrentBuilds()
+        disableConcurrentBuilds(),
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '60', numToKeepStr: '300'))
 ])
 
 def build = "spring-opentracing"
