@@ -33,7 +33,7 @@ awsDockerNode(build, flavor, workerImage) {
         runTests()
     }
 
-    findbugs pattern: '**/findbugsXml.xml'
+    findBugs pattern: '**/findbugsXml.xml'
 }
 
 def runTests() {
