@@ -15,6 +15,7 @@ class DiagnosticContextScope implements Scope {
     private final Span wrapped;
     private final boolean finishOnClose;
     private final DiagnosticContextScope toRestore;
+    private final boolean shouldRestore;
 
     DiagnosticContextScope(DiagnosticContextScopeManager scopeManager, Span wrapped) {
         this(scopeManager, wrapped, false);
@@ -25,8 +26,12 @@ class DiagnosticContextScope implements Scope {
         this.wrapped = wrapped;
         this.finishOnClose = finishOnClose;
         this.toRestore = scopeManager.getTlsScope().get();
+        this.shouldRestore = toRestore != null && toRestore.wrapped != null;
         this.scopeManager.getTlsScope().set(this);
 
+        if (shouldRestore) {
+            cleanBaggage(toRestore.wrapped.context());
+        }
         injectMdc(wrapped.context());
     }
 
@@ -45,7 +50,8 @@ class DiagnosticContextScope implements Scope {
         scopeManager.getTlsScope().set(toRestore);
 
         // and inject back the old MDC values
-        if (toRestore != null && toRestore.wrapped != null) {
+        if (shouldRestore) {
+            cleanBaggage(wrapped.context());
             injectMdc(toRestore.wrapped.context());
         } else {
             cleanMdc(wrapped.context());
@@ -68,6 +74,10 @@ class DiagnosticContextScope implements Scope {
         MDC.remove(TRACE_ID);
         MDC.remove(SPAN_ID);
         MDC.remove(TRACE_CONTEXT);
+        cleanBaggage(context);
+    }
+
+    private void cleanBaggage(SpanContext context) {
         context.baggageItems().forEach(e -> MDC.remove(e.getKey()));
     }
 
