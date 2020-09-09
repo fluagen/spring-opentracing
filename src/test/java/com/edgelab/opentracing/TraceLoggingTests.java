@@ -103,6 +103,32 @@ public class TraceLoggingTests {
         refuteMdc();
     }
 
+    @Test
+    public void makeSureWrappedContextBaggageAndContextToRestoreBaggageAreNotMixedUp() {
+        Span span1 = GlobalTracer.get().buildSpan("span1").start();
+        span1.setBaggageItem("item1", "abc");
+
+        Span span2 = GlobalTracer.get().buildSpan("span2").start();
+        span2.setBaggageItem("item2", "123");
+
+        try (Scope scope1 = GlobalTracer.get().activateSpan(span1)) {
+            assertThat(MDC.get("item1")).isEqualTo("abc");
+            assertThat(MDC.get("item2")).isNull();
+
+            try (Scope scope2 = GlobalTracer.get().activateSpan(span2)) {
+                assertThat(MDC.get("item1")).isNull();
+                assertThat(MDC.get("item2")).isEqualTo("123");
+            }
+
+            assertThat(MDC.get("item1")).isEqualTo("abc");
+            assertThat(MDC.get("item2")).isNull();
+
+        } finally {
+            span1.finish();
+            span2.finish();
+        }
+    }
+
     private static void assertMdc() {
         assertThat(MDC.get(TRACE_CONTEXT)).isNotEmpty();
         assertThat(MDC.get(TRACE_ID)).isNotEmpty();
@@ -116,5 +142,4 @@ public class TraceLoggingTests {
         assertThat(MDC.get(SPAN_ID)).isNull();
         assertThat(MDC.get(BAGGAGE_KEY)).isNull();
     }
-
 }
