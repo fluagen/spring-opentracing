@@ -3,12 +3,14 @@ package com.edgelab.opentracing.mdc;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
 import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.SPAN_ID;
 import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.TRACE_CONTEXT;
 import static com.edgelab.opentracing.mdc.DiagnosticContextScopeManager.TRACE_ID;
 
+@Slf4j
 class DiagnosticContextScope implements Scope {
 
     private final DiagnosticContextScopeManager scopeManager;
@@ -28,6 +30,10 @@ class DiagnosticContextScope implements Scope {
         this.toRestore = scopeManager.getTlsScope().get();
         this.shouldRestore = toRestore != null && toRestore.wrapped != null;
         this.scopeManager.getTlsScope().set(this);
+
+        if (toRestore != null && toRestore.wrapped == null) {
+            log.error("Null span");
+        }
 
         if (shouldRestore) {
             cleanBaggage(toRestore.wrapped.context());
