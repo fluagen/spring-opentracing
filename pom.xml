@@ -4,7 +4,7 @@
 
     <groupId>com.edgelab</groupId>
     <artifactId>spring-opentracing</artifactId>
-    <version>2020.09.09-b125</version>
+    <version>2020.09.17-b127</version>
     <packaging>jar</packaging>
     <description>Jaeger-based opentracing Spring integration</description>
 
