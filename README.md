@@ -49,3 +49,17 @@ logging:
   pattern:
     level: '%5p [%X{traceCtxt:-}/%X{client-in-the-baggage:-}]'
 ```
+
+### Using tracing from local machine
+To use tracing on your local machine we need to run a local jaeger agent that gathers data and sends it to the jaeger collector.
+```
+docker run --rm -p 6831:6831 -e REPORTER_GRPC_HOST_PORT=jaeger-collector.service.consul:14250 -e LOG_LEVEL=debug -p 6831:6831/udp jaegertracing/jaeger-agent:1.19.2
+```
+
+We must also adjust the jaeger properties:
+```yaml
+jaeger:
+  agent-host: localhost
+  agent-port: 6831
+  flush-interval: 1000
+```
