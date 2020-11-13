@@ -6,8 +6,7 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -36,7 +35,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
     "jaeger.remote-controlled-sampler.url: 169.254.1.1:5778/sampling",
     "logging.pattern.level: %5p [%X{traceCtxt:-}/%X{x-root-caller:-}]"
 })
-@RunWith(SpringRunner.class)
 @Slf4j
 public class TraceLoggingTests {
 
@@ -142,4 +140,5 @@ public class TraceLoggingTests {
         assertThat(MDC.get(SPAN_ID)).isNull();
         assertThat(MDC.get(BAGGAGE_KEY)).isNull();
     }
+
 }
